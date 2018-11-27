@@ -1,0 +1,27 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "HTML 5 done with Phaser-CE",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YouHaveNoSkill/game.git"
+  },
+  "keywords": [
+    "game",
+    "phaser-ce",
+    "html5"
+  ],
+  "author": "Juan de Dios González Salazar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YouHaveNoSkill/game/issues"
+  },
+  "homepage": "https://github.com/YouHaveNoSkill/game#readme",
+  "dependencies": {
+    "phaser-ce": "^2.11.1"
+  }
+}
