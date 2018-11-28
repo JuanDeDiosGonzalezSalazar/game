@@ -1,4 +1,27 @@
-console.log('test')
+class Player{
+    constructor(id, socket){
+        this.id = id;
+        this.position = {
+            x: -32,
+            y: -32
+        };
+        this.velocity = {
+            x: 256,
+            y: 256
+        };
+        this.socket = socket;
+    }
+
+    sanitize(){
+        let player = {
+            id: this.id,
+            position: this.position
+        };
+
+        return player;
+    }
+}
+
 window.onload = () => {
     console.log('Joining game server')
 
@@ -19,9 +42,12 @@ window.onload = () => {
         console.log("Starting game...")
         const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update})
 
-        let player;
-        let velocity = 256;
+        const player = new Player(socket.id, socket);
         let cursors;
+        let world = {
+            width: 1920,
+            height: 1920
+        }
 
         function preload() {
             game.load.image('ground', '/assets/ground.png');
@@ -33,52 +59,51 @@ window.onload = () => {
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
             // GROUND
-            game.add.sprite(0, 0, 'ground');
+            game.add.tileSprite(-world.width/2, -world.height/2, world.width, world.height, 'ground');
+            game.world.setBounds(-world.width/2, -world.height/2, world.width, world.height)
             
             // TREES
             trees = game.add.group();        
             trees.enableBody = true;
             const group_trees = [];
-            group_trees.push(trees.create(game.world.width * 0.25, game.world.height * 0.5 - 64, 'tree'));
-            group_trees.push(trees.create(game.world.width * 0.5, game.world.height * 0.5 - 64, 'tree'));
-            group_trees.push(trees.create(game.world.width * 0.75, game.world.height * 0.5 - 64, 'tree'));
+            group_trees.push(trees.create(-game.world.width * 0.25 - 48, -48, 'tree'));
+            group_trees.push(trees.create(-48, -48, 'tree'));
+            group_trees.push(trees.create(game.world.width * 0.25 - 48, -48, 'tree'));
             
             group_trees.forEach(tree => tree.body.immovable = true)
 
             // The player and its settings
-            player = game.add.sprite(0, 0, 'player');
-            player.animations.add('iddle', [0, 1], 5, true);
-            game.physics.arcade.enable(player);
+            player.sprite = game.add.sprite(-32, -32, 'player');
+            player.sprite.animations.add('iddle', [0, 1], 5, true);
+            game.physics.arcade.enable(player.sprite);
+            game.camera.follow(player.sprite)
 
             cursors = game.input.keyboard.createCursorKeys();
         }
         
         function update() {
-            game.physics.arcade.collide(player, trees);
+            game.physics.arcade.collide(player.sprite, trees);
 
-            player.body.velocity.x = 0;
-            player.body.velocity.y = 0;
-            // player.animations.stop();
-            // player.frame = 0;
-            player.animations.play('iddle');
+            player.sprite.body.velocity.x = 0;
+            player.sprite.body.velocity.y = 0;
+            // player.sprite.animations.stop();
+            // player.sprite.frame = 0;
+            player.sprite.animations.play('iddle');
 
             if (cursors.up.isDown)
             {
-                //  Move to the left
-                player.body.velocity.y = -velocity;
+                player.sprite.body.velocity.y = -player.velocity.y;
             }
             else if (cursors.down.isDown)
             {
-                //  Move to the right
-                player.body.velocity.y = velocity;
+                player.sprite.body.velocity.y = player.velocity.y;
             }
 
             if (cursors.left.isDown)
             {
-                //  Move to the right
-                player.body.velocity.x = -velocity;
+                player.sprite.body.velocity.x = -player.velocity.x;
             }else if(cursors.right.isDown){
-                player.body.velocity.x = velocity;
+                player.sprite.body.velocity.x = player.velocity.x;
             }
         }
     }
