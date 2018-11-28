@@ -4,7 +4,7 @@
   "description": "HTML 5 done with Phaser-CE",
   "main": "src/server.js",
   "scripts": {
-    "test": "nodemon src/server.js"
+    "test": "nodemon src/server/web.js & nodemon src/server/game.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/YouHaveNoSkill/game#readme",
   "dependencies": {
-    "phaser-ce": "^2.11.1"
+    "express": "^4.16.4",
+    "phaser-ce": "^2.11.1",
+    "socket.io": "^2.1.1"
   }
 }
